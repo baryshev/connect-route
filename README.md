@@ -5,6 +5,31 @@ Simple and fast router for Connect
 
 	npm install connect-route
 
-# Example
+# Usage
 
-See [examples](https://github.com/baryshev/connect-route/tree/master/examples) folder.
+```js
+var
+	connectRoute = require('connect-route');
+	connect = require('connect'),
+	app = connect();
+
+app.use(connectRoute(function (router) {
+	router.get('/', function (req, res, next) {
+		res.end('index');
+	});
+
+	router.get('/home', function (req, res, next) {
+		res.end('home');
+	});
+
+	router.get('/home/:id', function (req, res, next) {
+		res.end('home ' + req.params.id);
+	});
+
+	router.post('/home', function (req, res, next) {
+		res.end('POST to home');
+	});
+}));
+
+server.listen(3000);
+```
