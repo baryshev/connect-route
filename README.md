@@ -31,5 +31,5 @@ app.use(connectRoute(function (router) {
 	});
 }));
 
-server.listen(3000);
+app.listen(3000);
 ```
