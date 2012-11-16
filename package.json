@@ -1,6 +1,6 @@
 {
 	"name" : "connect-route",
-	"version" : "0.1.2",
+	"version" : "0.1.3",
 	"description" : "Simple and fast router for Connect",
 	"keywords": [ "router", "connect" ],
 	"author" : "Vadim M. Baryshev <vadimbaryshev@gmail.com>",
