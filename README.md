@@ -1,3 +1,4 @@
+[![build status](https://secure.travis-ci.org/baryshev/connect-route.png)](http://travis-ci.org/baryshev/connect-route)
 # About 
 Simple and fast router for Connect
 
