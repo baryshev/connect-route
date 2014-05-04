@@ -9,7 +9,7 @@ Simple and fast router for Connect
 
 ```js
 var
-	connectRoute = require('connect-route');
+	connectRoute = require('connect-route'),
 	connect = require('connect'),
 	app = connect();
 
