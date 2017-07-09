@@ -24,6 +24,13 @@ describe('Router', function () {
     };
   });
 
+  it('allows chaining of the route-registering methods', function () {
+    route(function (router) {
+      var result = router.get('/', function (req, res, next) {});
+      expect(result).to.equal(router);
+    });
+  });
+
   describe('when matching the method', function () {
     it('matches all usual methods', function () {
       [
