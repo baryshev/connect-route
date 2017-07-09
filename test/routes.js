@@ -167,5 +167,32 @@ describe('Router', function () {
       expect(this.req.params.id).to.equal('test1');
       expect(this.req.params.type).to.equal('test2');
     });
+
+    it('matches the whole path as a parametrized part (/*path)', function () {
+      this.route = route(function (router) {
+        router.get('/*path', function (req, res, next) {});
+      });
+      this.serve('GET', '/test');
+      expect(this.next.called).to.equal(false);
+      expect(this.req.params.path).to.deep.equal(['test']);
+    });
+
+    it('matches the rest of the path as a parametrized part (/start/*path)', function () {
+      this.route = route(function (router) {
+        router.get('/start/*path', function (req, res, next) {});
+      });
+      this.serve('GET', '/start/test');
+      expect(this.next.called).to.equal(false);
+      expect(this.req.params.path).to.deep.equal(['test']);
+    });
+
+    it('returns the rest of the path parts split (/*path)', function () {
+      this.route = route(function (router) {
+        router.get('/*path', function (req, res, next) {});
+      });
+      this.serve('GET', '/test1/test2');
+      expect(this.next.called).to.equal(false);
+      expect(this.req.params.path).to.deep.equal(['test1', 'test2']);
+    });
   });
 });
