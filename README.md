@@ -26,6 +26,10 @@ app.use(connectRoute(function (router) {
 		res.end('home ' + req.params.id);
 	});
 
+	router.get('/home/*path', function (req, res, next) {
+		res.end('home ' + req.params.path.join('/'));
+	});
+
 	router.post('/home', function (req, res, next) {
 		res.end('POST to home');
 	});
