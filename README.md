@@ -29,6 +29,18 @@ app.use(connectRoute(function (router) {
 	router.post('/home', function (req, res, next) {
 		res.end('POST to home');
 	});
+
+	function authenticate(req, res, next) {
+		if (authenticated(req)) {
+			next();
+		} else {
+			fail(res);
+		}
+	}
+
+	router.get('/secret', authenticate, function (req, res, next) {
+		res.end('secret');
+	});
 }));
 
 app.listen(3000);

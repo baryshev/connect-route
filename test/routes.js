@@ -168,4 +168,125 @@ describe('Router', function () {
       expect(this.req.params.type).to.equal('test2');
     });
   });
+
+  describe('when using multiple routes or handlers', function () {
+    it('executes the handler, if either of two paths matches', function () {
+      this.route = route(function (router) {
+        router.get('/test1', '/test2', function (req, res, next) {});
+      });
+      this.serve('GET', '/test1');
+      expect(this.next.called).to.equal(false);
+      this.serve('GET', '/test2');
+      expect(this.next.called).to.equal(false);
+    });
+
+    it('executes next(), if neither of two paths matches', function () {
+      this.route = route(function (router) {
+        router.get('/test1', '/test2', function (req, res, next) {});
+      });
+      this.serve('GET', '/test');
+      expect(this.next.called).to.equal(true);
+    });
+
+    it('executes two chained handlers, if the path matches', function () {
+      var first, second;
+      this.route = route(function (router) {
+        router.get('/test',
+          function (req, res, next) {
+            first = true;
+            next();
+          }, function (req, res, next) {
+            second = true;
+          });
+      });
+      this.serve('GET', '/test');
+      expect(this.next.called).to.equal(false);
+      expect(first).to.equal(true);
+      expect(second).to.equal(true);
+    });
+
+    it('executes two chained handlers twice, if both paths match', function () {
+      var first = 0,
+          second = 0;
+      this.route = route(function (router) {
+        router.get('/test1', '/test2',
+          function (req, res, next) {
+            ++first;
+            next();
+          }, function (req, res, next) {
+            ++second;
+          });
+      });
+      this.serve('GET', '/test1');
+      expect(this.next.called).to.equal(false);
+      expect(first).to.equal(1);
+      expect(second).to.equal(1);
+      this.serve('GET', '/test2');
+      expect(this.next.called).to.equal(false);
+      expect(first).to.equal(2);
+      expect(second).to.equal(2);
+    });
+
+    it('executes the first of two non-chained handlers, if the path matches', function () {
+      var first, second;
+      this.route = route(function (router) {
+        router.get('/test',
+          function (req, res, next) {
+            first = true;
+          }, function (req, res, next) {
+            second = true;
+          });
+      });
+      this.serve('GET', '/test');
+      expect(this.next.called).to.equal(false);
+      expect(first).to.equal(true);
+      expect(second).to.equal(undefined);
+    });
+
+    it('executes the first of two non-chained handlers twice, if the path matches', function () {
+      var first = 0,
+          second = 0;
+      this.route = route(function (router) {
+        router.get('/test1', '/test2',
+          function (req, res, next) {
+            ++first;
+          }, function (req, res, next) {
+            ++second;
+          });
+      });
+      this.serve('GET', '/test1');
+      expect(this.next.called).to.equal(false);
+      expect(first).to.equal(1);
+      expect(second).to.equal(0);
+      this.serve('GET', '/test2');
+      expect(this.next.called).to.equal(false);
+      expect(first).to.equal(2);
+      expect(second).to.equal(0);
+    });
+
+    it('executes next(), if neither of two paths matches', function () {
+      this.route = route(function (router) {
+        router.get('/test1', '/test2', function (req, res, next) {});
+      });
+      this.serve('GET', '/test');
+      expect(this.next.called).to.equal(true);
+    });
+
+    it('executes next(), if the path does not match', function () {
+      var first, second;
+      this.route = route(function (router) {
+        router.get('/test',
+          function (req, res, next) {
+            first = true;
+            next();
+          }, function (req, res, next) {
+            second = true;
+          });
+      });
+      this.serve('GET', '/test1');
+      expect(this.next.called).to.equal(true);
+      expect(first).to.equal(undefined);
+      expect(second).to.equal(undefined);
+    });
+  });
 });
